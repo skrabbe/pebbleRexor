@@ -14,7 +14,7 @@ var main = new UI.Card({
   title: 'Rexor',
   icon: 'images/menu_icon.png',
   subtitle: 'Affärssystem för konsulter...',
-  body: 'Klicka för att starta...'
+  body: ''
 });
 
 main.show();
@@ -65,6 +65,36 @@ function GetCompanies()
     var menu = new UI.Menu({
       sections: [{
       items: companyMenu
+      }]
+    });
+    menu.on('select', function(e) {
+			GetProjects(e.item.title);
+    });
+    menu.show();
+  });
+}
+										
+function GetProjects(company)
+{
+  core.getProjects(company, function(projectMenu) {
+    var menu = new UI.Menu({
+      sections: [{
+      items: projectMenu
+      }]
+    });
+    menu.on('select', function(e) {
+			GetActivities(company, e.item.title);
+    });
+    menu.show();
+  });
+}
+
+function GetActivities(company, project)
+{
+  core.getActivities(company, project, 'daniel', function(activityMenu) {
+    var menu = new UI.Menu({
+      sections: [{
+      items: activityMenu
       }]
     });
     menu.on('select', function(e) {
