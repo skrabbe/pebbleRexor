@@ -9,6 +9,7 @@ var Vector2 = require('vector2');
 //var ajax = require('ajax');
 var Rexor = require('rexor').Rexor, 
     core = new Rexor();
+var Vibe = require('ui/vibe'); 
  
 var main = new UI.Card({
   title: 'Rexor',
@@ -68,6 +69,7 @@ function GetCompanies()
       }]
     });
     menu.on('select', function(e) {
+			Vibe.vibrate('short');
 			GetProjects(e.item.title);
     });
     menu.show();
@@ -83,6 +85,7 @@ function GetProjects(company)
       }]
     });
     menu.on('select', function(e) {
+			Vibe.vibrate('short');
 			GetActivities(company, e.item.title);
     });
     menu.show();
@@ -98,6 +101,7 @@ function GetActivities(company, project)
       }]
     });
     menu.on('select', function(e) {
+			Vibe.vibrate('short');
     });
     menu.show();
   });

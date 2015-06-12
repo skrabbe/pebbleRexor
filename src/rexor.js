@@ -82,6 +82,7 @@ function Rexor()
 	this.getActivities = function(company, project, callback)
   {
     console.log('getting activities...');
+		console.log('https://api.rexor.se/api/Project/Activity/' + company + '/' + project + '/' + _user.id);
     ajax(
     {
       url:'https://api.rexor.se/api/Project/Activity/' + company + '/' + project + '/' + _user.id,
@@ -89,6 +90,9 @@ function Rexor()
       headers: { 'Authorization': 'Bearer ' + _token.access_token }
     },
     function(data) {
+			console.log('data');			
+			console.log(data);
+
       _activities = data;
       var menu = [];
       for(var i = 0; i < _activities.length; i++)
