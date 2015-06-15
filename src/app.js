@@ -6,9 +6,7 @@
 
 var UI = require('ui');
 var Vector2 = require('vector2');
-//var ajax = require('ajax');
-var Rexor = require('rexor').Rexor, 
-    core = new Rexor();
+var Rexor = require('rexor'), rexor = new Rexor();
 var Vibe = require('ui/vibe'); 
  
 var main = new UI.Card({
@@ -23,7 +21,7 @@ main.show();
 main.on('click', 'up', function(e) {
   var menu = new UI.Menu({
     sections: [{
-      items: core.getMenu()
+      items: rexor.getMenu()
     }]
   });
   menu.on('select', function(e) {
@@ -55,17 +53,17 @@ main.on('click', 'down', function(e) {
 
 function Login()
 {
-  core.login(function(success) {
+  rexor.login(function(success) {
     GetCompanies();
   });
 }
 
 function GetCompanies()
 {
-  core.getCompanies(function(companyMenu) {
+  rexor.getCompanies(function(items) {
     var menu = new UI.Menu({
       sections: [{
-      items: companyMenu
+      items: items
       }]
     });
     menu.on('select', function(e) {
@@ -78,10 +76,10 @@ function GetCompanies()
 										
 function GetProjects(company)
 {
-  core.getProjects(company, function(projectMenu) {
+  rexor.getProjects(company, function(items) {
     var menu = new UI.Menu({
       sections: [{
-      items: projectMenu
+      items: items
       }]
     });
     menu.on('select', function(e) {
@@ -94,10 +92,10 @@ function GetProjects(company)
 
 function GetActivities(company, project)
 {
-  core.getActivities(company, project, 'daniel', function(activityMenu) {
+  rexor.getActivities(company, project, function(items) {
     var menu = new UI.Menu({
       sections: [{
-      items: activityMenu
+      items: items
       }]
     });
     menu.on('select', function(e) {
