@@ -1,9 +1,3 @@
-/**
- * Welcome to Pebble.js!
- *
- * This is where you write your app.
- */
-
 var UI = require('ui');
 var Vector2 = require('vector2');
 var Rexor = require('rexor'), rexor = new Rexor();
@@ -100,6 +94,39 @@ function GetActivities(company, project)
     });
     menu.on('select', function(e) {
 			Vibe.vibrate('short');
+			GetHours();
+    });
+    menu.show();
+  });
+}
+
+function GetHours()
+{
+  rexor.getHours(function(items) {
+    var menu = new UI.Menu({
+      sections: [{
+      items: items
+      }]
+    });
+    menu.on('select', function(e) {
+			Vibe.vibrate('short');
+			GetTexts();
+    });
+    menu.show();
+  });
+}
+
+function GetTexts()
+{
+  rexor.getTexts(function(items) {
+    var menu = new UI.Menu({
+      sections: [{
+      items: items
+      }]
+    });
+    menu.on('select', function(e) {
+			Vibe.vibrate('short');
+			rexor.saveTime();
     });
     menu.show();
   });

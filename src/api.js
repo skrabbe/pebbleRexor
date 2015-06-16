@@ -5,12 +5,31 @@ function Api()
 {
 	var _token;
 	
-  this.post = function(url, callback)
+  this.get = function(url, callback)
   {
-    console.log('api posting...');
+    console.log('api get...');
     ajax(
     {
+			method: 'GET',
       url:url,
+      type:'json',
+      headers: { 'Authorization': 'Bearer ' + _token.access_token }
+    },
+    function(data) {
+			callback(data);
+    },
+    function(error) {
+      console.log('api get failed: ' + error);
+    });
+  };
+	this.post = function(url, data, callback)
+  {
+    console.log('api post...');
+    ajax(
+    {
+      method: 'POST',
+			url:url,
+			data:data,			
       type:'json',
       headers: { 'Authorization': 'Bearer ' + _token.access_token }
     },
