@@ -3,7 +3,7 @@ function Store()
 	var _user = {
 		id: 'daniel',		
 		username: 'rnd@daniel',
-		password: 'macowski81',
+		password: 'daniel',
 		domain: 'rnd'
   };
 	var _menu = [{

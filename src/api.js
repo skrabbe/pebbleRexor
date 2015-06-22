@@ -57,7 +57,6 @@ function Api()
 			}
     },
     function(data) {
-      console.log(JSON.stringify(data));
       _token = JSON.parse(data);
       callback(true);
     },

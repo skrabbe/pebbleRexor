@@ -1,79 +1,92 @@
+/* Libs */
 var UI = require('ui');
 var Vector2 = require('vector2');
 var Rexor = require('rexor'), rexor = new Rexor();
-var Vibe = require('ui/vibe'); 
- 
-var main = new UI.Card({
-  title: 'Rexor',
-  icon: 'images/menu_icon.png',
-  subtitle: 'Affärssystem för konsulter...',
-  body: ''
+var Vibe = require('ui/vibe');
+
+/* Variables */
+var isLoggedIn = false;
+//var APP_VERSION = "v0.1";
+
+Login(); // run login so user has auth when running program
+
+/* UI */
+var main = new UI.Window();
+
+var info_text = new UI.Text({
+  position: new Vector2(0, 50),
+  size: new Vector2(144, 30),
+  font: 'gothic-24-bold',
+  text: 'Rexor',
+  textAlign: 'center'
 });
 
-main.show();
+var anykey_text = new UI.Text({
+  position: new Vector2(0, 114),
+  size: new Vector2(144, 30),
+  font: 'gothic-14-bold',
+  text: 'Affärssystemet för konsulter...',
+  textAlign: 'center'
+});
 
-main.on('click', 'up', function(e) {
+/* Functions */
+function Loading()
+{
+	info_text.text('Laddar...');
+	main.show();
+}
+
+function Login()
+{
+  rexor.login(function(success) {
+    console.log('logged in...');
+		isLoggedIn = true;
+  });
+}
+
+function Start()
+{
   var menu = new UI.Menu({
     sections: [{
       items: rexor.getMenu()
     }]
   });
   menu.on('select', function(e) {
-      Login();
+			if(!isLoggedIn)
+				return;
+      GetCompanies();
   });
   menu.show();
-});
-
-main.on('click', 'select', function(e) {
-  var wind = new UI.Window();
-  var textfield = new UI.Text({
-    position: new Vector2(0, 50),
-    size: new Vector2(144, 30),
-    font: 'gothic-24-bold',
-    text: 'Text Anywhere!',
-    textAlign: 'center'
-  });
-  wind.add(textfield);
-  wind.show();
-});
-
-main.on('click', 'down', function(e) {
-  var card = new UI.Card();
-  card.title('A Card');
-  card.subtitle('Is a Window');
-  card.body('The simplest window type in Pebble.js.');
-  card.show();
-});
-
-function Login()
-{
-  rexor.login(function(success) {
-    GetCompanies();
-  });
+	anykey_text.text('Rexor');
 }
 
 function GetCompanies()
 {
+	Loading();
+
   rexor.getCompanies(function(items) {
-    var menu = new UI.Menu({
-      sections: [{
-      items: items
-      }]
-    });
-    menu.on('select', function(e) {
+		var menu = new UI.Menu({
+			sections: [{
+				title: 'Välj företag:',
+				items: items
+			}]
+		});
+		menu.on('select', function(e) {
 			Vibe.vibrate('short');
 			GetProjects(e.item.title);
-    });
+		});
     menu.show();
   });
 }
 										
 function GetProjects(company)
 {
+	Loading();
   rexor.getProjects(company, function(items) {
     var menu = new UI.Menu({
       sections: [{
-      items: items
+				title: 'Välj projekt:',
+				items: items
       }]
     });
     menu.on('select', function(e) {
@@ -86,10 +99,12 @@ function GetProjects(company)
 
 function GetActivities(company, project)
 {
+	Loading();
   rexor.getActivities(company, project, function(items) {
     var menu = new UI.Menu({
       sections: [{
-      items: items
+				title: 'Välj aktivitet:',
+				items: items
       }]
     });
     menu.on('select', function(e) {
@@ -102,10 +117,12 @@ function GetActivities(company, project)
 
 function GetHours()
 {
+	Loading();
   rexor.getHours(function(items) {
     var menu = new UI.Menu({
       sections: [{
-      items: items
+				title: 'Välj antal timmar:',
+				items: items
       }]
     });
     menu.on('select', function(e) {
@@ -118,10 +135,12 @@ function GetHours()
 
 function GetTexts()
 {
+	Loading();
   rexor.getTexts(function(items) {
     var menu = new UI.Menu({
       sections: [{
-      items: items
+				title: 'Välj text:',
+				items: items
       }]
     });
     menu.on('select', function(e) {
@@ -131,3 +150,12 @@ function GetTexts()
     menu.show();
   });
 }
+
+/* Init */
+main.on('click', 'up', Start);
+main.on('click', 'select', Start);
+main.on('click', 'down', Start);
+
+main.add(anykey_text);
+main.add(info_text);
+main.show();
