@@ -6,33 +6,46 @@ var Vibe = require('ui/vibe');
 
 /* Variables */
 var isLoggedIn = false;
+var _backGroundColor = "malachite";
+var _textColor = "black";
+var _highlightBackgroundColor = "black";
+var _highlightTextColor = 'white'
 //var APP_VERSION = "v0.1";
 
 Login(); // run login so user has auth when running program
 
 /* UI */
-var main = new UI.Window();
+var main = new UI.Window({
+		backgroundColor: _backGroundColor,
+		fullscreen:true
+});
 
 var info_text = new UI.Text({
-  position: new Vector2(0, 50),
-  size: new Vector2(144, 30),
-  font: 'gothic-24-bold',
+  position: new Vector2(0, 10),
+  size: new Vector2(144, 50),
   text: 'Rexor',
-  textAlign: 'center'
+	font: 'GOTHIC_28_BOLD',
+  color: 'white',
+  textOverflow: 'wrap',
+  textAlign: 'center',
+	backgroundColor: _backGroundColor
 });
 
 var anykey_text = new UI.Text({
-  position: new Vector2(0, 114),
-  size: new Vector2(144, 30),
-  font: 'gothic-14-bold',
-  text: 'Affärssystemet för konsulter...',
-  textAlign: 'center'
+  position: new Vector2(0, 100),
+  size: new Vector2(144, 168),  
+  text: 'Affärssystemet för konsulter...',    
+	font: 'GOTHIC_14_BOLD',
+  color: 'white',
+  textOverflow: 'wrap',
+  textAlign: 'center',
+	backgroundColor: _backGroundColor
 });
 
 /* Functions */
-function Loading()
+function SetText(text)
 {
-	info_text.text('Laddar...');
+	info_text.text(text);
 	main.show();
 }
 
@@ -47,68 +60,84 @@ function Login()
 function Start()
 {
   var menu = new UI.Menu({
+		backgroundColor: 'magenta', // purple
+		textColor: _textColor,  
+		highlightBackgroundColor: _highlightBackgroundColor,
+		highlightTextColor: _highlightTextColor,
     sections: [{
       items: rexor.getMenu()
     }]
   });
   menu.on('select', function(e) {
 			if(!isLoggedIn)
-				return;
-      GetCompanies();
+				return;      
+			GetProjects();
   });
   menu.show();
 	anykey_text.text('Rexor');
 }
-
-function GetCompanies()
-{
-	Loading();
-
-  rexor.getCompanies(function(items) {
-		var menu = new UI.Menu({
-			sections: [{
-				title: 'Välj företag:',
-				items: items
-			}]
-		});
-		menu.on('select', function(e) {
-			Vibe.vibrate('short');
-			GetProjects(e.item.title);
-		});
-    menu.show();
-  });
-}
 										
-function GetProjects(company)
+function GetProjects()
 {
-	Loading();
-  rexor.getProjects(company, function(items) {
-    var menu = new UI.Menu({
+	//Loading();
+  rexor.getProjects(function(items) {
+    var menu = new UI.Menu({		
+			backgroundColor: 'vividCerulean', //blue
+			textColor: _textColor,  
+			highlightBackgroundColor: _highlightBackgroundColor,
+			highlightTextColor: _highlightTextColor,
       sections: [{
 				title: 'Välj projekt:',
 				items: items
       }]
     });
     menu.on('select', function(e) {
-			Vibe.vibrate('short');
-			GetActivities(company, e.item.title);
+			rexor.setData('company', e.item.data.Company);
+			rexor.setData('project', e.item.data.ID);
+			GetActivities();
     });
     menu.show();
   });
 }
 
-function GetActivities(company, project)
+function GetActivities()
 {
-	Loading();
-  rexor.getActivities(company, project, function(items) {
+	//Loading();
+  rexor.getActivities(function(items) {
     var menu = new UI.Menu({
+			backgroundColor: 'lavenderIndigo', // pink
+			textColor: _textColor,  
+			highlightBackgroundColor: _highlightBackgroundColor,
+			highlightTextColor: _highlightTextColor,
       sections: [{
 				title: 'Välj aktivitet:',
 				items: items
       }]
     });
     menu.on('select', function(e) {
-			Vibe.vibrate('short');
+			rexor.setData('activity', e.item.data.ID);
+			GetDays();
+    });
+    menu.show();
+  });
+}
+
+function GetDays()
+{
+	//Loading();
+  rexor.getDays(function(items) {
+    var menu = new UI.Menu({
+			backgroundColor: 'green',
+			textColor: _textColor,  
+			highlightBackgroundColor: _highlightBackgroundColor,
+			highlightTextColor: _highlightTextColor,
+      sections: [{
+				title: 'Välj dag:',
+				items: items
+      }]
+    });
+    menu.on('select', function(e) {
+			rexor.setData('date', e.item.data.Value);
 			GetHours();
     });
     menu.show();
@@ -117,16 +146,20 @@ function GetActivities(company, project)
 
 function GetHours()
 {
-	Loading();
+	//Loading();
   rexor.getHours(function(items) {
     var menu = new UI.Menu({
+			backgroundColor: 'chromeYellow', // orange
+			textColor: _textColor,  
+			highlightBackgroundColor: _highlightBackgroundColor,
+			highlightTextColor: _highlightTextColor,
       sections: [{
 				title: 'Välj antal timmar:',
 				items: items
       }]
     });
     menu.on('select', function(e) {
-			Vibe.vibrate('short');
+			rexor.setData('number', e.item.data.Value);
 			GetTexts();
     });
     menu.show();
@@ -135,17 +168,55 @@ function GetHours()
 
 function GetTexts()
 {
-	Loading();
+	//Loading();
   rexor.getTexts(function(items) {
     var menu = new UI.Menu({
+			backgroundColor: 'electricUltramarine', //blue
+			textColor: _textColor,  
+			highlightBackgroundColor: _highlightBackgroundColor,
+			highlightTextColor: _highlightTextColor,
       sections: [{
 				title: 'Välj text:',
 				items: items
       }]
     });
     menu.on('select', function(e) {
-			Vibe.vibrate('short');
-			rexor.saveTime();
+			rexor.setData('text', e.item.data.Value);
+			SaveTime();
+    });
+    menu.show();
+  });
+}
+
+function SaveTime()
+{
+  rexor.getTexts(function(items) {
+    var menu = new UI.Menu({
+			backgroundColor: _backGroundColor,
+			textColor: _textColor,  
+			highlightBackgroundColor: _highlightBackgroundColor,
+			highlightTextColor: _highlightTextColor,
+      sections: [{
+				title: 'Spara?:',
+				items: [
+					{ title: 'Ja', subtitle: rexor.getInfo() },
+					{ title: 'Nej' }
+				]
+      }]
+    });
+    menu.on('select', function(e) {
+			if(e.item.title === 'Ja') {
+				rexor.saveTime(function(items) {
+					SetText('Sparad...');
+					Vibe.vibrate('short');
+				});					
+			}									
+    });
+		menu.on('click', 'up', function(e) {
+			GetProjects();
+    });
+		menu.on('click', 'down', function(e) {
+			GetProjects();
     });
     menu.show();
   });
@@ -156,6 +227,6 @@ main.on('click', 'up', Start);
 main.on('click', 'select', Start);
 main.on('click', 'down', Start);
 
-main.add(anykey_text);
 main.add(info_text);
+main.add(anykey_text);
 main.show();

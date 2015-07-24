@@ -1,8 +1,9 @@
 function Store()
 {
 	var _user = {
-		id: 'daniel',		
+		id: 'dm',		
 		username: 'rnd@daniel',
+		username_native: 'daniel',
 		password: 'daniel',
 		domain: 'rnd'
   };
@@ -49,6 +50,10 @@ function Store()
   };
 	this.setProjects = function(projects)
 	{
+		for(var i = 0; i < projects.length; i++) {
+			if(projects[i].ID === 'Absence')
+				projects[i].ID = 'Frånvaro';
+		}
     _projects = projects;
   };
 	this.getActivities = function()

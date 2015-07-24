@@ -52,7 +52,7 @@ function Api()
       data: { 
 				grant_type: 'password',
 				client_id: user.domain,
-				username: user.id,
+				username: user.username_native,
 				password: user.password
 			}
     },
