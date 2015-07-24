@@ -43,7 +43,9 @@ function Api()
   this.login = function(callback)
   {
     console.log('api login...');
-		var user = store.getUser();
+		var domain = localStorage.getItem('domain');
+		var username = localStorage.getItem('username');
+		var password = localStorage.getItem('password');		
     ajax(
     {
       url: 'https://auth.rexor.se/Token',
@@ -51,9 +53,9 @@ function Api()
       method: 'post',
       data: { 
 				grant_type: 'password',
-				client_id: user.domain,
-				username: user.username_native,
-				password: user.password
+				client_id: domain,
+				username: username,
+				password: password
 			}
     },
     function(data) {

@@ -1,12 +1,5 @@
 function Store()
 {
-	var _user = {
-		id: 'dm',		
-		username: 'rnd@daniel',
-		username_native: 'daniel',
-		password: 'daniel',
-		domain: 'rnd'
-  };
 	var _menu = [{
     title: 'Tid',
     //icon: 'images/menu_icon.png',
@@ -18,11 +11,18 @@ function Store()
 	
   this.getUser = function()
   {
-    return _user;
-  };
-	this.setUser = function(user)
-	{
-    _user = user;
+		var domain = localStorage.getItem('domain');
+		var id = localStorage.getItem('id');
+		var username = localStorage.getItem('username');
+		var password = localStorage.getItem('password');	
+		
+    return {
+			id: id,		
+			username: domain + '@' + username,
+			username_native: username,
+			password: password,
+			domain: domain
+		};
   };
 	this.getMenu = function()
   {

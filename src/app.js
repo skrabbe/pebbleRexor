@@ -9,7 +9,7 @@ var isLoggedIn = false;
 var _backGroundColor = "malachite";
 var _textColor = "black";
 var _highlightBackgroundColor = "black";
-var _highlightTextColor = 'white'
+var _highlightTextColor = "white";
 //var APP_VERSION = "v0.1";
 
 Login(); // run login so user has auth when running program
@@ -70,7 +70,7 @@ function Start()
   });
   menu.on('select', function(e) {
 			if(!isLoggedIn)
-				return;      
+				return;			
 			GetProjects();
   });
   menu.show();
@@ -226,6 +226,40 @@ function SaveTime()
 main.on('click', 'up', Start);
 main.on('click', 'select', Start);
 main.on('click', 'down', Start);
+
+Pebble.addEventListener('showConfiguration', function(e) {  
+  Pebble.openURL('https://cloud.rexor.se/pebble/config.html');
+});
+
+Pebble.addEventListener('webviewclosed', function(e) {
+  // Decode and parse config data as JSON
+  var config_data = JSON.parse(decodeURIComponent(e.response));  
+  
+  var dict = { 'DOMAIN': config_data.domain, 'USERNAME': config_data.username, 'PASSWORD': config_data.password };		
+  var domain = encodeURIComponent(config_data.domain);
+	var id = encodeURIComponent(config_data.id);
+	var username = encodeURIComponent(config_data.username);
+	var password = encodeURIComponent(config_data.password);
+
+  if (domain == 'undefined') domain = '';
+	if (id == 'undefined') id = '';
+	if (username == 'undefined') username = '';
+	if (password == 'undefined') password = '';
+  
+  localStorage.setItem('domain', domain);
+	localStorage.setItem('id', id);
+	localStorage.setItem('username', username);
+	localStorage.setItem('password', password);
+  
+  Pebble.sendAppMessage(dict, function(){
+    console.log('Sent config data to Pebble');  
+  }, function() {
+    console.log('Failed to send config data!');
+  });
+	
+	//Pebble.sendAppMessage({ 'temperature': 'test' + '\u00B0C'});
+	//Pebble.showSimpleNotificationOnPebble('test', 'test1');
+});
 
 main.add(info_text);
 main.add(anykey_text);

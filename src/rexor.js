@@ -84,7 +84,6 @@ function Rexor()
   {
 		console.log('getting projects...');
 		var self = this;
-
     if(store.getProjects())
 		{
 			callback(self.createMenu('project', store.getProjects()));			
